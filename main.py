@@ -2,18 +2,18 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from constants import constants
-from time import sleep
-from logger import logger
-from pathlib import Path
-import os
-import urllib.request
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
+from constants import constants
+from time import sleep
+from logger import logger
+from pathlib import Path
+import os
+import urllib.request
 
 def clear_field(field):
     field.click()
@@ -56,7 +56,7 @@ VIDEO_TAGS = "Video, Beat Saber, Oculus"
 options = webdriver.ChromeOptions()
 options.add_experimental_option('excludeSwitches', ['enable-logging'])
 #options.add_argument('--headless=new')
-options.add_argument(r"--user-data-dir=C:\Users\justi\AppData\Local\Google\Chrome\User Data");
+options.add_argument(r"--user-data-dir=C:\Users\justi\AppData\Local\Google\Chrome\User Data")
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
 driver.get(constants.YOUTUBE_URL)
