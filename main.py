@@ -2,18 +2,19 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from constants import constants
-from time import sleep
-from logger import logger
-from pathlib import Path
-import os
-import urllib.request
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
+from constants import constants
+from time import sleep
+from logger import logger
+from pathlib import Path
+import os
+import urllib.request
+
 
 def clear_field(field):
     field.click()
