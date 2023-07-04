@@ -7,6 +7,13 @@ from time import sleep
 from logger import logger
 from pathlib import Path
 import os
+import urllib.request
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
 
 def clear_field(field):
     field.click()
@@ -30,7 +37,7 @@ def write_in_field(field, string, select_all=False, getfirst=False):
 def get_video_id(driver):
 		video_id = None
 		try:
-			video_url_container = driver.find(
+			video_url_container = driver.find_element(
 				By.XPATH, constants.VIDEO_URL_CONTAINER)
 			video_url_element = driver.find(By.XPATH, constants.VIDEO_URL_ELEMENT, element=video_url_container)
 			video_id = video_url_element.get_attribute(
@@ -40,15 +47,17 @@ def get_video_id(driver):
 			pass
 		return video_id
 
-video_path = r"C:\Users\philip\Documents\ai\youtube-uploader\video_samples\rage.mp4"
+video_path = r"C:\Users\justi\Videos\test.mp4"
 
 VIDEO_TITLE = "Me Playing Beat Saber"
 VIDEO_DESCRIPTION = "A somewhat easier song but still fast paced."
 VIDEO_TAGS = "Video, Beat Saber, Oculus"
 
 options = webdriver.ChromeOptions()
-options.add_argument(r"--user-data-dir=C:\Users\philip\AppData\Local\Google\Chrome\User Data");
-driver = webdriver.Chrome(options=options)
+options.add_experimental_option('excludeSwitches', ['enable-logging'])
+#options.add_argument('--headless=new')
+options.add_argument(r"--user-data-dir=C:\Users\justi\AppData\Local\Google\Chrome\User Data");
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
 driver.get(constants.YOUTUBE_URL)
 driver.maximize_window()
@@ -56,7 +65,7 @@ sleep(constants.USER_WAITING_TIME)
 driver.get(constants.YOUTUBE_UPLOAD_URL)
 sleep(constants.USER_WAITING_TIME)
 absolute_video_path = str(Path.cwd() / video_path)
-driver.find_element_by_xpath(constants.INPUT_FILE_VIDEO).send_keys(absolute_video_path)
+driver.find_element(By.XPATH, constants.INPUT_FILE_VIDEO).send_keys(absolute_video_path)
 
 logger.debug('Attached video {}'.format(video_path))
 
@@ -65,7 +74,7 @@ logger.debug('Attached video {}'.format(video_path))
 uploading_status_container = None
 while uploading_status_container is None:
     sleep(constants.USER_WAITING_TIME)
-    uploading_status_container = driver.find_element_by_xpath(constants.UPLOADING_STATUS_CONTAINER)
+    uploading_status_container = driver.find_element(By.XPATH, constants.UPLOADING_STATUS_CONTAINER)
 
 # TODO: Set Video Thumbnail Code
 #
@@ -79,7 +88,7 @@ while uploading_status_container is None:
 #         'Attached thumbnail {}'.format(thumbnail_path))
 
 sleep(constants.USER_WAITING_TIME * 5)
-title_field, description_field = driver.find_elements_by_id(constants.TEXTBOX_ID)
+title_field, description_field = driver.find_elements(By.ID, constants.TEXTBOX_ID)
 
 write_in_field(title_field, VIDEO_TITLE, select_all=True)
 logger.debug('The video title was set to \"{}\"'.format(VIDEO_TITLE))
@@ -91,11 +100,11 @@ if video_description:
     logger.debug('Description filled.')
 
 # kids_section = driver.find(By.NAME, constants.NOT_MADE_FOR_KIDS_LABEL)
-kids_section = driver.find_elements_by_name(constants.NOT_MADE_FOR_KIDS_LABEL)
+kids_section = driver.find_elements(By.NAME, constants.NOT_MADE_FOR_KIDS_LABEL)
 kids_section[0].location_once_scrolled_into_view
 sleep(constants.USER_WAITING_TIME)
 
-driver.find_elements_by_id(constants.RADIO_LABEL)[1].click()
+driver.find_elements(By.ID, constants.RADIO_LABEL)[1].click()
 logger.debug('Selected \"{}\"'.format(constants.NOT_MADE_FOR_KIDS_LABEL))
 
 # TODO: Add functionality to add video to a playlist 
@@ -136,7 +145,7 @@ logger.debug('Selected \"{}\"'.format(constants.NOT_MADE_FOR_KIDS_LABEL))
 #     done_button.click()
 
 # Advanced options
-driver.find_elements_by_id(constants.ADVANCED_BUTTON_ID)[0].click()
+driver.find_elements(By.ID, constants.ADVANCED_BUTTON_ID)[0].click()
 logger.debug('Clicked MORE OPTIONS')
 sleep(constants.USER_WAITING_TIME)
 
@@ -149,13 +158,13 @@ sleep(constants.USER_WAITING_TIME)
 #     write_in_field(tags_field, tags, getfirst=True)
 #     logger.debug('The tags were set to \"{}\"'.format(tags))
 
-driver.find_elements_by_id(constants.NEXT_BUTTON)[0].click()
+driver.find_elements(By.ID, constants.NEXT_BUTTON)[0].click()
 logger.debug('Clicked {} one'.format(constants.NEXT_BUTTON))
 
-driver.find_elements_by_id(constants.NEXT_BUTTON)[0].click()
+driver.find_elements(By.ID, constants.NEXT_BUTTON)[0].click()
 logger.debug('Clicked {} two'.format(constants.NEXT_BUTTON))
 
-driver.find_elements_by_id(constants.NEXT_BUTTON)[0].click()
+driver.find_elements(By.ID, constants.NEXT_BUTTON)[0].click()
 logger.debug('Clicked {} three'.format(constants.NEXT_BUTTON))
 
 # TODO: Add functionality to schedule video upload
@@ -176,8 +185,8 @@ logger.debug('Clicked {} three'.format(constants.NEXT_BUTTON))
 #     driver.find(By.XPATH, constants.SCHEDULE_TIME).send_keys(Keys.ENTER)
 #     logger.debug(f"Scheduled the video for {schedule}")
 # else:
-public_main_button = driver.find_elements_by_name(constants.PUBLIC_BUTTON)
-driver.find_elements_by_id(constants.RADIO_LABEL)[3].click()
+public_main_button = driver.find_elements(By.NAME, constants.PUBLIC_BUTTON)
+driver.find_elements(By.ID, constants.RADIO_LABEL)[3].click()
 logger.debug('Made the video {}'.format(constants.PUBLIC_BUTTON))
 
 video_id = get_video_id(driver)
@@ -194,7 +203,7 @@ sleep(constants.USER_WAITING_TIME)
 
 # logger.debug('Upload container gone.')
 
-done_button = driver.find_elements_by_id(constants.DONE_BUTTON)
+done_button = driver.find_elements(By.ID, constants.DONE_BUTTON)
 
 # TODO: Implement check if submit box is greyed and unselectable 
 #
