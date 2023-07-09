@@ -98,14 +98,12 @@ class YoutubeUploader:
         sleep(constants.USER_WAITING_TIME)
         absolute_video_path = str(Path.cwd() / metadata.video_path)
         self.driver.find_element(By.XPATH, constants.INPUT_FILE_VIDEO).send_keys(absolute_video_path)
-
         logger.debug('Attached video {}'.format(metadata.video_path))
-
 
         # Find status container
         uploading_status_container = None
         while uploading_status_container is None:
-            sleep(constants.USER_WAITING_TIME)
+            self.wait_until_elem_present(By.XPATH, constants.UPLOADING_STATUS_CONTAINER)
             uploading_status_container = self.driver.find_element(By.XPATH, constants.UPLOADING_STATUS_CONTAINER)
 
         # TODO: Set Video Thumbnail Code
@@ -246,7 +244,6 @@ class YoutubeUploader:
         #     logger.error(error_message)
 
         done_button[0].click()
-        sleep(constants.USER_WAITING_TIME)
         self.driver.quit()
 
 if __name__ == "__main__":
