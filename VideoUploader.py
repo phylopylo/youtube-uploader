@@ -25,20 +25,11 @@ class VideoMetadata:
 
 class YoutubeUploader:
 
-    def wait_until_elem_present(mode: str, selection, driver) -> bool:
-        mode_options = {
-            'CSS_SELECTOR': By.CSS_SELECTOR,
-            'CLASS_NAME':By.CLASS_NAME,
-            'ID':By.ID,
-            'TAG_NAME':By.TAG_NAME,
-            'XPATH':By.XPATH,
-            'LINK_TEXT':By.LINK_TEXT,
-            'PARTIAL_LINK_TEXT':By.PARTIAL_LINK_TEXT
-        }
+    def wait_until_elem_present(self, mode: str, selection) -> bool:
         try:
             element_present = EC.presence_of_element_located(
-                (mode_options[mode], selection))
-            WebDriverWait(driver, 12).until(element_present)
+                (mode, selection))
+            WebDriverWait(self.driver, 12).until(element_present)
             return True
         except:
             return False
@@ -48,16 +39,16 @@ class YoutubeUploader:
     #     SWITCH_CHANNEL = ""
     #     driver.find(By.XPATH, )
 
-    def clear_field(field):
-        field.click()
-        sleep(constants.USER_WAITING_TIME)
-        field.send_keys(Keys.CONTROL + 'a')
-        sleep(constants.USER_WAITING_TIME)
-        field.send_keys(Keys.BACKSPACE)
+    # def clear_field(field):
+    #     field.click()
+    #     sleep(constants.USER_WAITING_TIME)
+    #     field.send_keys(Keys.CONTROL + 'a')
+    #     sleep(constants.USER_WAITING_TIME)
+    #     field.send_keys(Keys.BACKSPACE)
 
     def write_in_field(self, field, string, select_all=False, getfirst=False):
         if select_all:
-            self.clear_field(field)
+            field.clear()
         else:
             if getfirst:
                 field[0].click()
@@ -80,17 +71,10 @@ class YoutubeUploader:
                 pass
             return video_id
     
-    def __init__(self, profile_path: str = None, headless: bool = False):
-        self.driver = self.setup_driver(profile_path, headless)
+    def __init__(self, headless: bool = False):
+        self.driver = self.setup_driver(headless)
 
-    def setup_driver(self, profile_path: str = None, headless: bool = False) -> ChromeDriver:
-
-        user_data_dir = str(Path.home()) + r'\AppData\Local\Google\Chrome\User Data' 
-
-        if profile_path is None:
-            profile_path = str(Path.home()) + r'\AppData\Local\Google\Chrome\User Data\selenium'
-
-        print(r'--profile-directory=' + profile_path)
+    def setup_driver(self, headless: bool = False) -> ChromeDriver:
 
         options = webdriver.ChromeOptions()
         options.add_experimental_option('excludeSwitches', ['enable-logging'])
@@ -98,8 +82,9 @@ class YoutubeUploader:
         if headless:
             options.add_argument('--headless=new')
 
-        # options.add_argument('--user-data-dir=' + user_data_dir)
-        # options.add_argument(r'--profile-directory=' + profile_path)
+        user_data_dir = str(Path.home()) + r'\AppData\Local\Google\Chrome\User Data' 
+        options.add_argument('--user-data-dir=' + user_data_dir)
+        
         driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
         return driver
@@ -134,13 +119,13 @@ class YoutubeUploader:
         #     logger.debug(
         #         'Attached thumbnail {}'.format(thumbnail_path))
 
-        sleep(constants.USER_WAITING_TIME)
+        self.wait_until_elem_present(By.ID, constants.TEXTBOX_ID)
         title_field, description_field = self.driver.find_elements(By.ID, constants.TEXTBOX_ID)
 
-        self.write_in_field(title_field, metadata.VIDEO_TITLE, select_all=True)
-        logger.debug('The video title was set to \"{}\"'.format(metadata.VIDEO_TITLE))
+        self.write_in_field(title_field, metadata.video_title, select_all=True)
+        logger.debug('The video title was set to \"{}\"'.format(metadata.video_title))
 
-        video_description = metadata.VIDEO_DESCRIPTION
+        video_description = metadata.video_description
         video_description = video_description.replace("\n", Keys.ENTER)
         if video_description:
             self.write_in_field(description_field, video_description, select_all=True)
