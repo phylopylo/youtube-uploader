@@ -25,7 +25,7 @@ class VideoMetadata:
 
 class YoutubeUploader:
 
-    def present(mode: str, selection, driver):
+    def wait_until_elem_present(mode: str, selection, driver) -> bool:
         mode_options = {
             'CSS_SELECTOR': By.CSS_SELECTOR,
             'CLASS_NAME':By.CLASS_NAME,
@@ -110,7 +110,7 @@ class YoutubeUploader:
         self.driver.maximize_window()
         sleep(constants.USER_WAITING_TIME)
         self.driver.get(constants.YOUTUBE_UPLOAD_URL)
-        sleep(constants.USER_WAITING_TIME * 2)
+        sleep(constants.USER_WAITING_TIME)
         absolute_video_path = str(Path.cwd() / metadata.video_path)
         self.driver.find_element(By.XPATH, constants.INPUT_FILE_VIDEO).send_keys(absolute_video_path)
 
@@ -134,7 +134,7 @@ class YoutubeUploader:
         #     logger.debug(
         #         'Attached thumbnail {}'.format(thumbnail_path))
 
-        sleep(constants.USER_WAITING_TIME * 5)
+        sleep(constants.USER_WAITING_TIME)
         title_field, description_field = self.driver.find_elements(By.ID, constants.TEXTBOX_ID)
 
         self.write_in_field(title_field, metadata.VIDEO_TITLE, select_all=True)

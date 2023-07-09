@@ -9,6 +9,6 @@ videoInfo.video_description = "Well done."
 videoInfo.video_tags = "Memes, Soylent, Internet, Redditor"
 
 automation = YoutubeUploader()
-# automation.upload_video(videoInfo)
+automation.upload_video(videoInfo)
 while True:
     time.sleep(1)
