@@ -17,6 +17,20 @@ import os
 import urllib.request
 
 class VideoMetadata:
+    """
+    A data class to store upload info about a YouTube video.
+
+    Values
+    ------
+    video_path
+        The filepath to the video file to be uploaded
+    video_title
+        The title of the video
+    video_description
+        The description of the video
+    video_tags
+        The tags for the video
+    """
     def __init__(self, video_path: str = "", video_title: str = "My Video", video_description: str = "A video I made.", video_tags: str = "YouTube"):
         self.video_path = video_path
         self.video_title = video_title
@@ -24,6 +38,14 @@ class VideoMetadata:
         self.video_tags = video_tags
 
 class YoutubeUploader:
+    """
+    An uploader for YouTube videos.
+
+    Example Usage
+    ------
+    automation = YoutubeUploader()
+    automation.upload_video(<VideoMetadata>)
+    """
 
     def wait_until_elem_present(self, mode: str, selection) -> bool:
         try:
