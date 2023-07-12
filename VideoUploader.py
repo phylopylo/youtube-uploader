@@ -79,19 +79,6 @@ class YoutubeUploader:
             sleep(constants.USER_WAITING_TIME)
 
         field.send_keys(string)
-
-    def get_video_id(self):
-            video_id = None
-            try:
-                video_url_container = self.driver.find_element(
-                    By.XPATH, constants.VIDEO_URL_CONTAINER)
-                video_url_element = self.driver.find(By.XPATH, constants.VIDEO_URL_ELEMENT, element=video_url_container)
-                video_id = video_url_element.get_attribute(
-                    constants.HREF).split('/')[-1]
-            except:
-                logger.warning(constants.VIDEO_NOT_FOUND_ERROR)
-                pass
-            return video_id
     
     def __init__(self, headless: bool = False):
         self.driver = self.setup_driver(headless)
@@ -152,8 +139,9 @@ class YoutubeUploader:
             logger.debug('Description filled.')
 
         # kids_section = driver.find(By.NAME, constants.NOT_MADE_FOR_KIDS_LABEL)
-        kids_section = self.driver.find_elements(By.NAME, constants.NOT_MADE_FOR_KIDS_LABEL)
-        kids_section[0].location_once_scrolled_into_view
+        kids_section = self.driver.find_element(By.NAME, constants.NOT_MADE_FOR_KIDS_LABEL)
+
+        kids_section.location_once_scrolled_into_view
         sleep(constants.USER_WAITING_TIME)
 
         self.driver.find_elements(By.ID, constants.RADIO_LABEL)[1].click()
@@ -202,13 +190,13 @@ class YoutubeUploader:
         sleep(constants.USER_WAITING_TIME)
 
         # TODO: Implement functionality to add tags to video
-        #
-        # tags = VIDEO_TAGS
-        # if tags:
-        #     # tags_container = driver.find_elements_by_id(constants.TAGS_CONTAINER_ID)
-        #     tags_field = driver.find_elements_by_id(constants.TAGS_INPUT)
-        #     write_in_field(tags_field, tags, getfirst=True)
-        #     logger.debug('The tags were set to \"{}\"'.format(tags))
+        
+        tags = metadata.video_tags
+        if tags:
+            tags_container = self.driver.find_elements(By.ID, constants.TAGS_CONTAINER_ID)
+            tags_field = self.driver.find_elements(By.ID, constants.TAGS_INPUT)
+            self.write_in_field(tags_field[1], tags)
+            logger.debug('The tags were set to \"{}\"'.format(tags))
 
         self.driver.find_elements(By.ID, constants.NEXT_BUTTON)[0].click()
         logger.debug('Clicked {} one'.format(constants.NEXT_BUTTON))
@@ -219,29 +207,9 @@ class YoutubeUploader:
         self.driver.find_elements(By.ID, constants.NEXT_BUTTON)[0].click()
         logger.debug('Clicked {} three'.format(constants.NEXT_BUTTON))
 
-        # TODO: Add functionality to schedule video upload
-        #
-        # schedule = metadata_dict[constants.VIDEO_SCHEDULE]
-        # if schedule:
-        #     upload_time_object = datetime.strptime(schedule, "%m/%d/%Y, %H:%M")
-        #     driver.find(By.ID, constants.SCHEDULE_CONTAINER_ID).click()
-        #     driver.find(By.ID, constants.SCHEDULE_DATE_ID).click()
-        #     driver.find(By.XPATH, constants.SCHEDULE_DATE_TEXTBOX).clear()
-        #     driver.find(By.XPATH, constants.SCHEDULE_DATE_TEXTBOX).send_keys(
-        #         datetime.strftime(upload_time_object, "%b %e, %Y"))
-        #     driver.find(By.XPATH, constants.SCHEDULE_DATE_TEXTBOX).send_keys(Keys.ENTER)
-        #     driver.find(By.XPATH, constants.SCHEDULE_TIME).click()
-        #     driver.find(By.XPATH, constants.SCHEDULE_TIME).clear()
-        #     driver.find(By.XPATH, constants.SCHEDULE_TIME).send_keys(
-        #         datetime.strftime(upload_time_object, "%H:%M"))
-        #     driver.find(By.XPATH, constants.SCHEDULE_TIME).send_keys(Keys.ENTER)
-        #     logger.debug(f"Scheduled the video for {schedule}")
-        # else:
         public_main_button = self.driver.find_elements(By.NAME, constants.PUBLIC_BUTTON)
         self.driver.find_elements(By.ID, constants.RADIO_LABEL)[3].click()
         logger.debug('Made the video {}'.format(constants.PUBLIC_BUTTON))
-
-        video_id = self.get_video_id()
 
         # Check status container and upload progress
         sleep(constants.USER_WAITING_TIME)
@@ -266,6 +234,7 @@ class YoutubeUploader:
         #     logger.error(error_message)
 
         done_button[0].click()
+        sleep(100)
         self.driver.quit()
 
 if __name__ == "__main__":
