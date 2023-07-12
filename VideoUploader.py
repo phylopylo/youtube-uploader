@@ -55,18 +55,6 @@ class YoutubeUploader:
             return True
         except:
             return False
-        
-    # def switch_channels(driver, channel_name: str):
-    #     AVATAR_MENU = "avatar-btn"
-    #     SWITCH_CHANNEL = ""
-    #     driver.find(By.XPATH, )
-
-    # def clear_field(field):
-    #     field.click()
-    #     sleep(constants.USER_WAITING_TIME)
-    #     field.send_keys(Keys.CONTROL + 'a')
-    #     sleep(constants.USER_WAITING_TIME)
-    #     field.send_keys(Keys.BACKSPACE)
 
     def write_in_field(self, field, string, select_all=False, getfirst=False):
         if select_all:
@@ -77,7 +65,6 @@ class YoutubeUploader:
             else:
                 field.click()
             sleep(constants.USER_WAITING_TIME)
-
         field.send_keys(string)
     
     def __init__(self, headless: bool = False):
@@ -99,6 +86,14 @@ class YoutubeUploader:
         return driver
     
     def upload_video(self, metadata: VideoMetadata):
+        """
+        Upload a video to youtube.
+
+        Input Parameters
+        -----
+        metadata
+            A VideoMetadata object containing information about the video to be updated. The only necessary option is filepath, but it is reccomended to set every option.
+        """
 
         self.driver.get(constants.YOUTUBE_URL)
         self.driver.maximize_window()
@@ -128,7 +123,6 @@ class YoutubeUploader:
 
         self.wait_until_elem_present(By.ID, constants.TEXTBOX_ID)
         title_field, description_field = self.driver.find_elements(By.ID, constants.TEXTBOX_ID)
-
         self.write_in_field(title_field, metadata.video_title, select_all=True)
         logger.debug('The video title was set to \"{}\"'.format(metadata.video_title))
 
@@ -138,58 +132,17 @@ class YoutubeUploader:
             self.write_in_field(description_field, video_description, select_all=True)
             logger.debug('Description filled.')
 
-        # kids_section = driver.find(By.NAME, constants.NOT_MADE_FOR_KIDS_LABEL)
         kids_section = self.driver.find_element(By.NAME, constants.NOT_MADE_FOR_KIDS_LABEL)
-
         kids_section.location_once_scrolled_into_view
         sleep(constants.USER_WAITING_TIME)
 
         self.driver.find_elements(By.ID, constants.RADIO_LABEL)[1].click()
         logger.debug('Selected \"{}\"'.format(constants.NOT_MADE_FOR_KIDS_LABEL))
 
-        # TODO: Add functionality to add video to a playlist 
-        #
-        # playlist = metadata_dict[constants.VIDEO_PLAYLIST]
-        # if playlist:
-        #     driver.find(By.CLASS_NAME, constants.PL_DROPDOWN_CLASS).click()
-        #     sleep(constants.USER_WAITING_TIME)
-        #     search_field = driver.find(By.ID, constants.PL_SEARCH_INPUT_ID)
-        #     __write_in_field(search_field, playlist)
-        #     sleep(constants.USER_WAITING_TIME * 2)
-        #     playlist_items_container = driver.find(By.ID, constants.PL_ITEMS_CONTAINER_ID)
-        #     # Try to find playlist
-        #     logger.debug('Playlist xpath: "{}".'.format(constants.PL_ITEM_CONTAINER.format(playlist)))
-        #     playlist_item = driver.find(By.XPATH, constants.PL_ITEM_CONTAINER.format(playlist), playlist_items_container)
-        #     if playlist_item:
-        #         logger.debug('Playlist found.')
-        #         playlist_item.click()
-        #         sleep(constants.USER_WAITING_TIME)
-        #     else:
-        #         logger.debug('Playlist not found. Creating')
-        #         __clear_field(search_field)
-        #         sleep(constants.USER_WAITING_TIME)
-
-        #         new_playlist_button = driver.find(By.CLASS_NAME, constants.PL_NEW_BUTTON_CLASS)
-        #         new_playlist_button.click()
-
-        #         create_playlist_container = driver.find(By.ID, constants.PL_CREATE_PLAYLIST_CONTAINER_ID)
-        #         playlist_title_textbox = driver.find(By.XPATH, "//textarea", create_playlist_container)
-        #         __write_in_field(playlist_title_textbox, playlist)
-
-        #         sleep(constants.USER_WAITING_TIME)
-        #         create_playlist_button = driver.find(By.CLASS_NAME, constants.PL_CREATE_BUTTON_CLASS)
-        #         create_playlist_button.click()
-        #         sleep(constants.USER_WAITING_TIME)
-
-        #     done_button = driver.find(By.CLASS_NAME, constants.PL_DONE_BUTTON_CLASS)
-        #     done_button.click()
-
         # Advanced options
         self.driver.find_elements(By.ID, constants.ADVANCED_BUTTON_ID)[0].click()
         logger.debug('Clicked MORE OPTIONS')
         sleep(constants.USER_WAITING_TIME)
-
-        # TODO: Implement functionality to add tags to video
         
         tags = metadata.video_tags
         if tags:
@@ -236,6 +189,11 @@ class YoutubeUploader:
         done_button[0].click()
         sleep(100)
         self.driver.quit()
+    
+# def switch_channels(driver, channel_name: str):
+#     AVATAR_MENU = "avatar-btn"
+#     SWITCH_CHANNEL = ""
+#     driver.find(By.XPATH, )
 
 if __name__ == "__main__":
     logger.error("VideoUploader does not have a main function. Are you sure you are running the correct file?")
