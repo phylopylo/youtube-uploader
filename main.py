@@ -10,8 +10,4 @@ videoInfo.video_tags = "Memes, Soylent, Internet, Redditor"
 videoInfo.video_thumbnail_path = r"C:\Users\justi\OneDrive\Documents\GitHub\youtube-uploader\video-samples\gottacatchemall.jpg"
 
 automation = YoutubeUploader()
-#automation.setup_driver()
 automation.upload_video(videoInfo)
-
-while True:
-    time.sleep(1)
