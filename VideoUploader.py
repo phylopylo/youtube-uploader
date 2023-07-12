@@ -17,11 +17,12 @@ import os
 import urllib.request
 
 class VideoMetadata:
-    def __init__(self, video_path: str = "", video_title: str = "My Video", video_description: str = "A video I made.", video_tags: str = "YouTube"):
+    def __init__(self, video_path: str = "", video_title: str = "My Video", video_description: str = "A video I made.", video_tags: str = "YouTube", video_thumbnail_path: str = ""):
         self.video_path = video_path
         self.video_title = video_title
         self.video_description = video_description
         self.video_tags = video_tags
+        self.video_thumbnail_path = video_thumbnail_path
 
 class YoutubeUploader:
 
@@ -33,7 +34,7 @@ class YoutubeUploader:
             'TAG_NAME':By.TAG_NAME,
             'XPATH':By.XPATH,
             'LINK_TEXT':By.LINK_TEXT,
-            'PARTIAL_LINK_TEXT':By.PARTIAL_LINK_TEXT
+            'PARTIAL_LINK_TEXT':By.PARTIAL_LINK_TEXT  
         }
         try:
             element_present = EC.presence_of_element_located(
@@ -86,9 +87,9 @@ class YoutubeUploader:
     def setup_driver(self, profile_path: str = None, headless: bool = False) -> ChromeDriver:
 
         user_data_dir = str(Path.home()) + r'\AppData\Local\Google\Chrome\User Data' 
-
+        x = input()
         if profile_path is None:
-            profile_path = str(Path.home()) + r'\AppData\Local\Google\Chrome\User Data\selenium'
+            profile_path = str(Path.home()) + r'\AppData\Local\Google\Chrome\User Data ' + x
 
         print(r'--profile-directory=' + profile_path)
 
@@ -96,10 +97,11 @@ class YoutubeUploader:
         options.add_experimental_option('excludeSwitches', ['enable-logging'])
 
         if headless:
+            print("headless")
             options.add_argument('--headless=new')
 
-        # options.add_argument('--user-data-dir=' + user_data_dir)
-        # options.add_argument(r'--profile-directory=' + profile_path)
+        options.add_argument('--user-data-dir=' + user_data_dir)
+        options.add_argument(r'--profile-directory=' + x)
         driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
         return driver
@@ -120,19 +122,20 @@ class YoutubeUploader:
         # Find status container
         uploading_status_container = None
         while uploading_status_container is None:
-            sleep(constants.USER_WAITING_TIME)
+            sleep(constants.USER_WAITING_TIME * 2)
             uploading_status_container = self.driver.find_element(By.XPATH, constants.UPLOADING_STATUS_CONTAINER)
 
         # TODO: Set Video Thumbnail Code
         #
-        # if thumbnail_path is not None:
-        #     absolute_thumbnail_path = str(Path.cwd() / thumbnail_path)
-        #     driver.find(By.XPATH, constants.INPUT_FILE_THUMBNAIL).send_keys(
-        #         absolute_thumbnail_path)
-        #     change_display = "document.getElementById('file-loader').style = 'display: block! important'"
-        #     driver.driver.execute_script(change_display)
-        #     logger.debug(
-        #         'Attached thumbnail {}'.format(thumbnail_path))
+        if metadata.video_thumbnail_path is not None:
+            absolute_thumbnail_path = str(Path.cwd() / metadata.video_thumbnail_path)
+            sleep(constants.USER_WAITING_TIME * 2)
+            self.driver.find_element(By.XPATH, constants.INPUT_FILE_THUMBNAIL).send_keys(
+                absolute_thumbnail_path)
+            change_display = "document.getElementById('file-loader').style = 'display: block! important'"
+            self.driver.execute_script(change_display)
+            logger.debug(
+                'Attached thumbnail {}'.format(metadata.video_thumbnail_path))
 
         sleep(constants.USER_WAITING_TIME * 5)
         title_field, description_field = self.driver.find_elements(By.ID, constants.TEXTBOX_ID)

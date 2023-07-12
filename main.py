@@ -7,7 +7,7 @@ videoInfo.video_path = r"C:\Users\justi\OneDrive\Documents\GitHub\youtube-upload
 videoInfo.video_title = "My Honest Reaction"
 videoInfo.video_description = "Well done."
 videoInfo.video_tags = "Memes, Soylent, Internet, Redditor"
-videoInfo.video_thumbnail_path = r"C:\Users\justi\OneDrive\Documents\GitHub\youtube-uploader\video-samples\gotta catch em all.jpg"
+videoInfo.video_thumbnail_path = r"C:\Users\justi\OneDrive\Documents\GitHub\youtube-uploader\video-samples\gottacatchemall.jpg"
 
 automation = YoutubeUploader()
 #automation.setup_driver()

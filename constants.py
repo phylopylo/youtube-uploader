@@ -11,7 +11,7 @@ class constants:
     TEXTBOX_ID = 'textbox'
     TEXT_INPUT = 'text-input'
     RADIO_LABEL = 'radioLabel'
-    UPLOADING_STATUS_CONTAINER = '/html/body/ytcp-uploads-dialog/tp-yt-paper-dialog/div/ytcp-animatable[2]/div/div[1]/ytcp-video-upload-progress[@uploading=""]'
+    UPLOADING_STATUS_CONTAINER = '//*[@id="dialog"]/div/ytcp-animatable[2]/div/div[1]/ytcp-video-upload-progress'
     NOT_MADE_FOR_KIDS_LABEL = 'VIDEO_MADE_FOR_KIDS_NOT_MFK'
 
     UPLOAD_DIALOG = '//ytcp-uploads-dialog'
@@ -29,6 +29,7 @@ class constants:
     DONE_BUTTON = 'done-button'
     INPUT_FILE_VIDEO = "//input[@type='file']"
     INPUT_FILE_THUMBNAIL = "//input[@id='file-loader']"
+    INPUT_FILE_THUMBXPATH = "//*[@id='still-picker']/ytcp-thumbnails-compact-editor-uploader-old/div/button"
 
     # Playlist
     VIDEO_PLAYLIST = 'playlist_title'
