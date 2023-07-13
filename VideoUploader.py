@@ -169,35 +169,18 @@ class YoutubeUploader:
         logger.debug('Made the video {}'.format(constants.PUBLIC_BUTTON))
 
         # Check status container and upload progress
+        upload_complete = False
+        while not upload_complete:
+            upload_status = self.driver.find_elements(By.CLASS_NAME, "progress-label.style-scope.ytcp-video-upload-progress")
+            print(upload_status[0].text)
+            upload_complete = "Checks complete. No issues found." in upload_status[0].text
+            sleep(0.1)
+
         sleep(constants.USER_WAITING_TIME)
-
-        # TODO: Implement wait until upload complete, rather than waiting a hardcoded period of time
-        #
-        # uploading_status_container = driver.find_elements_by_xpath(constants.UPLOADING_STATUS_CONTAINER)
-        # uploading_progress = uploading_status_container.get_attribute('value')
-        # logger.debug('Upload video progress: {}%'.format(uploading_progress))
-        # sleep(constants.USER_WAITING_TIME * 5)
-
-        # logger.debug('Upload container gone.')
-
         done_button = self.driver.find_elements(By.ID, constants.DONE_BUTTON)
-
-        # TODO: Implement check if submit box is greyed and unselectable 
-        #
-        # Catch such error as
-        # "File is a duplicate of a video you have already uploaded"
-        # if done_button.get_attribute('aria-disabled') == 'true':
-        #     error_message = driver.find_elements_by_xpath(constants.ERROR_CONTAINER).text
-        #     logger.error(error_message)
-
         done_button[0].click()
-        sleep(100)
+        sleep(constants.USER_WAITING_TIME)
         self.driver.quit()
-    
-# def switch_channels(driver, channel_name: str):
-#     AVATAR_MENU = "avatar-btn"
-#     SWITCH_CHANNEL = ""
-#     driver.find(By.XPATH, )
 
 if __name__ == "__main__":
     logger.error("VideoUploader does not have a main function. Are you sure you are running the correct file?")
