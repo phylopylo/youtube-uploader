@@ -181,6 +181,25 @@ class YoutubeUploader:
         done_button[0].click()
         sleep(constants.USER_WAITING_TIME)
         self.driver.quit()
+    
+    def switch_channels(self, channel_name: str):
+        self.driver.get(constants.CHANNEL_SWITCH_URL)
+        self.wait_until_elem_present(By.ID, 'contents')
+
+        all_content_divs = self.driver.find_elements(By.ID, 'contents')
+        for content_div in all_content_divs:
+            if content_div.get_attribute("class") == "style-scope ytd-channel-switcher-page-renderer":
+                channel_switcher = content_div
+                break
+
+        if content_div is None:
+            raise Exception("Channel Switcher not found.")
+        
+        for channel in channel_switcher.find_elements(By.XPATH, ".//*"):
+            if(channel_name in channel.text):
+                channel.click()
+                print("Switched to channel " + channel_name)
+                break
 
 if __name__ == "__main__":
     logger.error("VideoUploader does not have a main function. Are you sure you are running the correct file?")

@@ -28,8 +28,8 @@ class constants:
     VIDEO_NOT_FOUND_ERROR = 'Could not find video_id'
     DONE_BUTTON = 'done-button'
     INPUT_FILE_VIDEO = "//input[@type='file']"
-    INPUT_FILE_THUMBNAIL = "//input[@id='file-loader']"
-    INPUT_FILE_THUMBXPATH = "//*[@id='still-picker']/ytcp-thumbnails-compact-editor-uploader-old/div/button"
+    INPUT_FILE_THUMBNAIL = "//*[@id='file-loader']"
+
 
     # Playlist
     VIDEO_PLAYLIST = 'playlist_title'
@@ -48,3 +48,7 @@ class constants:
     SCHEDULE_DATE_ID = 'datepicker-trigger'
     SCHEDULE_DATE_TEXTBOX = '/html/body/ytcp-date-picker/tp-yt-paper-dialog/div/form/tp-yt-paper-input/tp-yt-paper-input-container/div[2]/div/iron-input/input'
     SCHEDULE_TIME = "/html/body/ytcp-uploads-dialog/tp-yt-paper-dialog/div/ytcp-animatable[1]/ytcp-uploads-review/div[2]/div[1]/ytcp-video-visibility-select/div[3]/ytcp-visibility-scheduler/div[1]/ytcp-datetime-picker/div/div[2]/form/ytcp-form-input-container/div[1]/div/tp-yt-paper-input/tp-yt-paper-input-container/div[2]/div/iron-input/input"
+
+    #Channel Switching
+    CHANNEL_SWITCH_URL = "https://www.youtube.com/channel_switcher"
+    NEXT_PAGE = '//*[@id="contents"]'
