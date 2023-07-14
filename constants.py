@@ -1,3 +1,11 @@
+"""
+YouTube Video Uploader Tool - Constants file
+
+Modified by Philip Roberts and Justin Bell
+
+Original file can be found here: https://github.com/linouk23/youtube_uploader_selenium/blob/master/youtube_uploader_selenium/Constant.py
+"""
+
 class constants:
     """A class for storing constants for YoutubeUploader class"""
     YOUTUBE_URL = 'https://www.youtube.com'

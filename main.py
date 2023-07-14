@@ -10,8 +10,9 @@ videoInfo.video_tags = "Memes, Soylent, Internet, Redditor"
 videoInfo.video_thumbnail_path = r"C:\Users\philip\Documents\ai\youtube-uploader\video-samples\gottacatchemall.jpg"
 
 automation = YoutubeUploader()
-automation.switch_channels(channel_name="@phils_stuff")
-automation.upload_video(videoInfo)
-time.sleep(5)
 automation.switch_channels(channel_name="@PhilsIdeas-gh9yv")
 automation.upload_video(videoInfo)
+time.sleep(5)
+automation.switch_channels(channel_name="@phils_stuff")
+automation.upload_video(videoInfo)
+automation.exit()
