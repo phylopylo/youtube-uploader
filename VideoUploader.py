@@ -150,6 +150,7 @@ class YoutubeUploader:
 
         if headless:
             options.add_argument('--headless=new')
+            options.add_argument('--no-sandbox')
 
 
         #Adds your deafault Chrome Account as the user data directory for the application
