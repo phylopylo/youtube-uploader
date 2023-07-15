@@ -49,6 +49,20 @@ class YoutubeUploader:
     """
 
     def wait_until_elem_present(self, mode: str, selection) -> bool:
+        """
+        A function that waits until an element is present and should be used as a buffer between actions so that code is not executed before
+        an element is present
+
+        Input Parameters
+        -----
+            mode
+                the attribute that can be accessed by selenium which can be XPATH, ID, Class, etc
+            selection
+                the specific element on the webpage that can be accessed
+        Return Value
+        -----
+            returns bool
+        """
         try:
             element_present = EC.presence_of_element_located(
                 (mode, selection))
@@ -58,6 +72,20 @@ class YoutubeUploader:
             return False
 
     def write_in_field(self, field, string, select_all=False, getfirst=False):
+        """
+        A function that writes in a field or search bar spefically and enters in text
+
+        Input Parameters
+        ------------
+            field 
+                the field the string will be inputted to (could be a search bar)
+            string
+                a string of text to enter into the field
+            select_all
+                selects all fields if there is a list of fields
+            getfirst
+                only selects the first field if there is a list of fields
+        """
         if select_all:
             field.clear()
         else:
@@ -69,19 +97,40 @@ class YoutubeUploader:
         field.send_keys(string)
     
     def __init__(self, headless: bool = False):
+        """
+        a python __init__ function
+
+        Input Parameters
+        ------
+            headless
+                a bool that is true when the application is headless
+        """
         self.driver = self.setup_driver(headless)
 
     def setup_driver(self, headless: bool = False) -> ChromeDriver:
+        """
+        Sets up the ChromeDriver which can be ran either headless or using your default chrome account
 
+        Input Parameters
+        ----
+            headless
+                a boolean stating whether the ChromeDriver should be headless or not (WIP)
+        Return Value
+        ----
+            returns a ChromeDriver object
+        """
         options = webdriver.ChromeOptions()
         options.add_experimental_option('excludeSwitches', ['enable-logging'])
 
         if headless:
             options.add_argument('--headless=new')
 
+
+        #Adds your deafault Chrome Account as the user data directory for the application
         user_data_dir = str(Path.home()) + r'\AppData\Local\Google\Chrome\User Data' 
         options.add_argument('--user-data-dir=' + user_data_dir)
         
+        #Creates the driver
         driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
         return driver
@@ -183,6 +232,13 @@ class YoutubeUploader:
         self.driver.quit()
     
     def switch_channels(self, channel_name: str):
+        """
+        Switches the current channel you are on with channel_name
+        
+        Input Parameters
+        ------
+            channel_name: a string that is the channel name of the channel that will be switched to.
+        """
         self.driver.get(constants.CHANNEL_SWITCH_URL)
         self.wait_until_elem_present(By.ID, 'contents')
 
