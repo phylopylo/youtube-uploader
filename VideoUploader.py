@@ -1,20 +1,46 @@
+"""
+YouTube Video Uploader Tool
+Authors: Philip Roberts and Justin Bell
+
+======================================================================
+
+                    YouTube Video Uploader
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+    USA
+
+======================================================================
+"""
+
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.chrome import ChromeDriver
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+import urllib.request
 from constants import constants
-from time import sleep
 from logger import logger
 from pathlib import Path
+import time
 import os
-import urllib.request
 
 class VideoMetadata:
     """
@@ -93,7 +119,7 @@ class YoutubeUploader:
                 field[0].click()
             else:
                 field.click()
-            sleep(constants.USER_WAITING_TIME)
+            time.sleep(constants.USER_WAITING_TIME)
         field.send_keys(string)
     
     def __init__(self, headless: bool = False):
@@ -147,9 +173,9 @@ class YoutubeUploader:
 
         self.driver.get(constants.YOUTUBE_URL)
         self.driver.maximize_window()
-        sleep(constants.USER_WAITING_TIME)
+        time.sleep(constants.USER_WAITING_TIME)
         self.driver.get(constants.YOUTUBE_UPLOAD_URL)
-        sleep(constants.USER_WAITING_TIME)
+        time.sleep(constants.USER_WAITING_TIME)
         absolute_video_path = str(Path.cwd() / metadata.video_path)
         self.driver.find_element(By.XPATH, constants.INPUT_FILE_VIDEO).send_keys(absolute_video_path)
         logger.debug('Attached video {}'.format(metadata.video_path))
@@ -158,14 +184,14 @@ class YoutubeUploader:
         uploading_status_container = None
         while uploading_status_container is None:
             self.wait_until_elem_present(By.XPATH, constants.UPLOADING_STATUS_CONTAINER)
-            sleep(0.01)
+            time.sleep(0.01)
             uploading_status_container = self.driver.find_element(By.XPATH, constants.UPLOADING_STATUS_CONTAINER)
 
         # TODO: Set Video Thumbnail Code
         #
         if metadata.video_thumbnail_path is not None:
             absolute_thumbnail_path = str(Path.cwd() / metadata.video_thumbnail_path)
-            #sleep(constants.USER_WAITING_TIME * 2)
+            #time.sleep(constants.USER_WAITING_TIME * 2)
             self.wait_until_elem_present(By.XPATH, constants.INPUT_FILE_THUMBNAIL)
             self.driver.find_element(By.XPATH, constants.INPUT_FILE_THUMBNAIL).send_keys(
                 absolute_thumbnail_path)
@@ -187,7 +213,7 @@ class YoutubeUploader:
 
         kids_section = self.driver.find_element(By.NAME, constants.NOT_MADE_FOR_KIDS_LABEL)
         kids_section.location_once_scrolled_into_view
-        sleep(constants.USER_WAITING_TIME)
+        time.sleep(constants.USER_WAITING_TIME)
 
         self.driver.find_elements(By.ID, constants.RADIO_LABEL)[1].click()
         logger.debug('Selected \"{}\"'.format(constants.NOT_MADE_FOR_KIDS_LABEL))
@@ -195,7 +221,7 @@ class YoutubeUploader:
         # Advanced options
         self.driver.find_elements(By.ID, constants.ADVANCED_BUTTON_ID)[0].click()
         logger.debug('Clicked MORE OPTIONS')
-        sleep(constants.USER_WAITING_TIME)
+        time.sleep(constants.USER_WAITING_TIME)
         
         tags = metadata.video_tags
         if tags:
@@ -223,13 +249,13 @@ class YoutubeUploader:
             upload_status = self.driver.find_elements(By.CLASS_NAME, "progress-label.style-scope.ytcp-video-upload-progress")
             print(upload_status[0].text)
             upload_complete = "Checks complete. No issues found." in upload_status[0].text
-            sleep(0.1)
+            time.sleep(0.1)
 
-        sleep(constants.USER_WAITING_TIME)
+        time.sleep(constants.USER_WAITING_TIME)
         done_button = self.driver.find_elements(By.ID, constants.DONE_BUTTON)
         done_button[0].click()
-        sleep(constants.USER_WAITING_TIME)
-        self.driver.quit()
+        time.sleep(constants.USER_WAITING_TIME)
+        # self.driver.close()
     
     def switch_channels(self, channel_name: str):
         """
@@ -256,6 +282,13 @@ class YoutubeUploader:
                 channel.click()
                 print("Switched to channel " + channel_name)
                 break
+
+        time.sleep(5)
+
+        # self.driver.close()
+    
+    def exit(self):
+        self.driver.quit()
 
 if __name__ == "__main__":
     logger.error("VideoUploader does not have a main function. Are you sure you are running the correct file?")
