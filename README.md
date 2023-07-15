@@ -63,3 +63,7 @@
   automation.upload_video(videoInfo)
   automation.exit()
   ```
+  ## Authors
+  This software was written by Philip Roberts and Justin Bell.
+
+  [Check out my website!](http://philip.roberts.ws/)
