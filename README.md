@@ -1,14 +1,14 @@
 # youtube-uploader
-  Automation for YouTube video uploading. Utilizes a headless Selenium web browser to upload YouTube Videos to one or more YouTube Channels.
+  Automation for YouTube video uploading. Utilizes a Selenium web browser to upload YouTube Videos to one or more YouTube Channels.
 ## Prerequisites
   First, ensure that the [Chrome web browser](https://www.google.com/chrome/) is installed on your system.
 
   To install dependencies, run:
   `pip install -r requirements.txt`
   or install these modules:
-    - logger==1.4
-    - selenium==4.10.0
-    - webdriver_manager==3.8.6
+  - logger==1.4
+  - selenium==4.10.0
+  - webdriver_manager==3.8.6
 
   ## Basic Functionality
   First, import every function from VideoUploader.
