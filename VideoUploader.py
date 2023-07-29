@@ -266,27 +266,45 @@ class YoutubeUploader:
         ------
             channel_name: a string that is the channel name of the channel that will be switched to.
         """
+
+        # Open the channel switching page on YouTube, and wait until it is completely loaded.
         self.driver.get(constants.CHANNEL_SWITCH_URL)
         self.wait_until_elem_present(By.ID, 'contents')
 
-        all_content_divs = self.driver.find_elements(By.ID, 'contents')
-        for content_div in all_content_divs:
-            if content_div.get_attribute("class") == "style-scope ytd-channel-switcher-page-renderer":
-                channel_switcher = content_div
-                break
+        # Once the contents div exists, find the container for the channel switcher
+        channel_switcher = self.driver.find_elements(By.ID, 'contents')[2]
 
-        if content_div is None:
+        # If the loop didn't find the channel switcher, throw an exception.
+        if channel_switcher is None:
             raise Exception("Channel Switcher not found.")
         
+        # Loop through each channel div, and when the channel div contains the YouTube tag of the channel to be switched to, click on it.
         for channel in channel_switcher.find_elements(By.XPATH, ".//*"):
+            
             if(channel_name in channel.text):
                 channel.click()
                 print("Switched to channel " + channel_name)
                 break
 
-        time.sleep(5)
+        time.sleep(1)
 
-        # self.driver.close()
+        # Confirm that the channel switched successfully
+
+        # Open the YouTube homepage, click on the avatar profile picture, and confirm that the channel name is within the dialog box.
+        self.driver.get(constants.YOUTUBE_URL)
+        self.wait_until_elem_present(By.ID, "avatar-btn")
+        self.driver.find_elements(By.ID, "avatar-btn")[0].click()
+
+        self.wait_until_elem_present(By.ID, "channel-handle")
+        dialog_boxes = self.driver.find_elements(By.ID, "channel-handle")
+        
+        for dialog in dialog_boxes:
+            print(dialog.text)
+            if channel_name in dialog.text:
+                print("Channel Switch Confirmed")
+                return True
+
+        raise Exception("Channel Switch Failure")
     
     def exit(self):
         self.driver.quit()
